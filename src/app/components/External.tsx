@@ -4,7 +4,7 @@ import { useState } from "react";
 
 interface Expense {
   name: string;
-  expense: number;
+  expense: number | null;
 }
 
 interface Balance {
@@ -13,20 +13,20 @@ interface Balance {
 }
 
 export default function External() {
-  const [zakaryaExpense, setZakaryaExpense] = useState<number>(0);
-  const [anzokExpense, setAnzokExpense] = useState<number>(0);
-  const [reshadExpense, setReshadExpense] = useState<number>(0);
+  const [zakaryaExpense, setZakaryaExpense] = useState<number | null>(null);
+  const [anzokExpense, setAnzokExpense] = useState<number | null>(null);
+  const [reshadExpense, setReshadExpense] = useState<number | null>(null);
   const [settlements, setSettlements] = useState<string[]>([]);
 
   const calculateSettlements = () => {
     const expenses: Expense[] = [
-      { name: "Zakarya", expense: zakaryaExpense },
-      { name: "Anzok", expense: anzokExpense },
-      { name: "Reshad", expense: reshadExpense },
+      { name: "Zakarya", expense: zakaryaExpense || 0 },
+      { name: "Anzok", expense: anzokExpense || 0 },
+      { name: "Reshad", expense: reshadExpense || 0 },
     ];
 
     const totalExpense = expenses.reduce(
-      (sum, person) => sum + person.expense,
+      (sum, person) => sum + (person.expense || 0),
       0
     );
     const equalShare = totalExpense / expenses.length;
@@ -34,7 +34,7 @@ export default function External() {
     // Calculate how much each person is owed or owes
     const balances: Balance[] = expenses.map((person) => ({
       name: person.name,
-      balance: person.expense - equalShare,
+      balance: (person.expense || 0) - equalShare,
     }));
 
     const settlementsArray: string[] = [];
@@ -72,8 +72,12 @@ export default function External() {
           <input
             type="number"
             className="w-full p-2 border border-gray-300 rounded"
-            value={zakaryaExpense}
-            onChange={(e) => setZakaryaExpense(parseFloat(e.target.value) || 0)}
+            value={zakaryaExpense ?? ""}
+            onChange={(e) =>
+              setZakaryaExpense(
+                e.target.value ? parseFloat(e.target.value) : null
+              )
+            }
           />
         </div>
         <div>
@@ -81,8 +85,12 @@ export default function External() {
           <input
             type="number"
             className="w-full p-2 border border-gray-300 rounded"
-            value={anzokExpense}
-            onChange={(e) => setAnzokExpense(parseFloat(e.target.value) || 0)}
+            value={anzokExpense ?? ""}
+            onChange={(e) =>
+              setAnzokExpense(
+                e.target.value ? parseFloat(e.target.value) : null
+              )
+            }
           />
         </div>
         <div>
@@ -90,8 +98,12 @@ export default function External() {
           <input
             type="number"
             className="w-full p-2 border border-gray-300 rounded"
-            value={reshadExpense}
-            onChange={(e) => setReshadExpense(parseFloat(e.target.value) || 0)}
+            value={reshadExpense ?? ""}
+            onChange={(e) =>
+              setReshadExpense(
+                e.target.value ? parseFloat(e.target.value) : null
+              )
+            }
           />
         </div>
         <button
